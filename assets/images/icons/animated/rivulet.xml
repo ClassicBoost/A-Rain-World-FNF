@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="rivulet.png">
+<SubTexture name="normal0000" x="0" y="0" width="140" height="134" frameX="-2" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0001" x="140" y="0" width="139" height="133" frameX="-3" frameY="-17" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0002" x="0" y="0" width="140" height="134" frameX="-2" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0003" x="140" y="0" width="139" height="133" frameX="-3" frameY="-17" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0004" x="0" y="0" width="140" height="134" frameX="-2" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0005" x="140" y="0" width="139" height="133" frameX="-3" frameY="-17" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0006" x="0" y="0" width="140" height="134" frameX="-2" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0007" x="140" y="0" width="139" height="133" frameX="-3" frameY="-17" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0008" x="0" y="0" width="140" height="134" frameX="-2" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0009" x="140" y="0" width="139" height="133" frameX="-3" frameY="-17" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0010" x="0" y="0" width="140" height="134" frameX="-2" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0011" x="0" y="134" width="139" height="133" frameX="-3" frameY="-17" frameWidth="150" frameHeight="150" />
+<SubTexture name="lose0000" x="139" y="134" width="136" height="134" frameX="-5" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="lose0001" x="0" y="268" width="134" height="133" frameX="-7" frameY="-17" frameWidth="150" frameHeight="150" />
+<SubTexture name="win0000" x="134" y="268" width="140" height="134" frameX="-2" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="win0001" x="0" y="402" width="139" height="133" frameX="-3" frameY="-17" frameWidth="150" frameHeight="150" />
+</TextureAtlas>

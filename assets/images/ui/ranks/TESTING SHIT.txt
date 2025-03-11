@@ -1,2 +1,0 @@
-Set allowPizzaTowerRanks to true if you want to enable this.
-But really this doesn't do much and it's purely visual.

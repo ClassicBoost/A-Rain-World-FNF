@@ -1,45 +1,39 @@
 package meta.data.dependency;
 
-import Sys.sleep;
+#if DISCORD_RPC
 import discord_rpc.DiscordRpc;
+#end
+import lime.app.Application;
 
-using StringTools;
-
-class DiscordClient
+/**
+	Discord Rich Presence, both heavily based on Izzy Engine and the base game's, as well as with a lot of help 
+	from the creator of izzy engine because I'm dummy and dont know how to program discord
+**/
+class Discord
 {
-	public function new()
+	#if DISCORD_RPC
+	// set up the rich presence initially
+	public static function initializeRPC()
 	{
-		trace("Discord Client starting...");
 		DiscordRpc.start({
-			clientID: "996642668413206558",
+			clientID: "1031181637863620708",
 			onReady: onReady,
 			onError: onError,
 			onDisconnected: onDisconnected
 		});
-		trace("Discord Client started.");
 
-		while (true)
-		{
-			DiscordRpc.process();
-			sleep(2);
-			//trace("Discord Client Update");
-		}
+		// THANK YOU GEDE
+		Application.current.window.onClose.add(shutdownRPC);
+	}
 
-		DiscordRpc.shutdown();
-	}
-	
-	public static function shutdown()
-	{
-		DiscordRpc.shutdown();
-	}
-	
+	// from the base game
 	static function onReady()
 	{
 		DiscordRpc.presence({
-			details: "In the Menus",
+			details: "",
 			state: null,
-			largeImageKey: 'icon',
-			largeImageText: "Psych Forever Engine"
+			largeImageKey: 'fel-logo',
+			largeImageText: "Forever Engine Legacy"
 		});
 	}
 
@@ -53,35 +47,33 @@ class DiscordClient
 		trace('Disconnected! $_code : $_message');
 	}
 
-	public static function initialize()
-	{
-		var DiscordDaemon = sys.thread.Thread.create(() ->
-		{
-			new DiscordClient();
-		});
-		trace("Discord Client initialized");
-	}
+	//
 
-	public static function changePresence(details:String, state:Null<String>, ?smallImageKey : String, ?hasStartTimestamp : Bool, ?endTimestamp: Float)
+	public static function changePresence(details:String = '', state:Null<String> = '', ?smallImageKey:String, ?hasStartTimestamp:Bool, ?endTimestamp:Float)
 	{
-		var startTimestamp:Float = if(hasStartTimestamp) Date.now().getTime() else 0;
+		var startTimestamp:Float = (hasStartTimestamp) ? Date.now().getTime() : 0;
 
 		if (endTimestamp > 0)
-		{
 			endTimestamp = startTimestamp + endTimestamp;
-		}
 
 		DiscordRpc.presence({
 			details: details,
 			state: state,
-			largeImageKey: 'icon',
-			largeImageText: "Engine Version: " + Main.foreverVersion,
-			smallImageKey : smallImageKey,
+			largeImageKey: 'fel-logo',
+			largeImageText: "Forever Engine Legacy",
+			smallImageKey: smallImageKey,
 			// Obtained times are in milliseconds so they are divided so Discord can use it
-			startTimestamp : Std.int(startTimestamp / 1000),
-            endTimestamp : Std.int(endTimestamp / 1000)
+			startTimestamp: Std.int(startTimestamp / 1000),
+			endTimestamp: Std.int(endTimestamp / 1000)
 		});
 
-		//trace('Discord RPC Updated. Arguments: $details, $state, $smallImageKey, $hasStartTimestamp, $endTimestamp');
+		// trace('Discord RPC Updated. Arguments: $details, $state, $smallImageKey, $hasStartTimestamp, $endTimestamp');
 	}
+
+	public static function shutdownRPC()
+	{
+		// borrowed from izzy engine -- somewhat, at least
+		DiscordRpc.shutdown();
+	}
+	#end
 }

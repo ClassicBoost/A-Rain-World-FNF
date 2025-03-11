@@ -9,16 +9,14 @@ using StringTools;
 
 class Boyfriend extends Character
 {
-	public var startedDeath:Bool = false;
+	public var stunned:Bool = false;
 
-	public function new(x:Float, y:Float, ?char:String = 'bf')
-	{
-		super(x, y, char, true);
-	}
+	public function new()
+		super(true);
 
 	override function update(elapsed:Float)
 	{
-		if (!debugMode && animation.curAnim != null)
+		if (!debugMode)
 		{
 			if (animation.curAnim.name.startsWith('sing'))
 			{
@@ -32,7 +30,7 @@ class Boyfriend extends Character
 				playAnim('idle', true, false, 10);
 			}
 
-			if (animation.curAnim.name == 'firstDeath' && animation.curAnim.finished && startedDeath)
+			if (animation.curAnim.name == 'firstDeath' && animation.curAnim.finished)
 			{
 				playAnim('deathLoop');
 			}

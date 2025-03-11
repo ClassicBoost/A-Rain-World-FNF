@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="greeny.png">
+<SubTexture name="win0000" x="0" y="0" width="138" height="120" frameX="-14" frameY="-30" frameWidth="150" frameHeight="150" />
+<SubTexture name="win0001" x="138" y="0" width="138" height="120" frameX="-14" frameY="-30" frameWidth="150" frameHeight="150" />
+<SubTexture name="win0002" x="276" y="0" width="138" height="120" frameX="-14" frameY="-30" frameWidth="150" frameHeight="150" />
+<SubTexture name="win0003" x="0" y="120" width="138" height="120" frameX="-14" frameY="-30" frameWidth="150" frameHeight="150" />
+<SubTexture name="win0004" x="138" y="120" width="138" height="120" frameX="-14" frameY="-30" frameWidth="150" frameHeight="150" />
+<SubTexture name="win0005" x="276" y="120" width="138" height="120" frameX="-14" frameY="-30" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0000" x="0" y="240" width="138" height="120" frameX="-14" frameY="-30" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0001" x="138" y="240" width="138" height="120" frameX="-14" frameY="-30" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0002" x="276" y="240" width="138" height="120" frameX="-14" frameY="-30" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0003" x="0" y="360" width="138" height="120" frameX="-14" frameY="-30" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0004" x="138" y="360" width="138" height="120" frameX="-14" frameY="-30" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0005" x="276" y="360" width="138" height="120" frameX="-14" frameY="-30" frameWidth="150" frameHeight="150" />
+<SubTexture name="lose0000" x="0" y="480" width="138" height="120" frameX="-14" frameY="-30" frameWidth="150" frameHeight="150" />
+<SubTexture name="lose0001" x="138" y="480" width="138" height="120" frameX="-14" frameY="-30" frameWidth="150" frameHeight="150" />
+<SubTexture name="lose0002" x="276" y="480" width="138" height="120" frameX="-14" frameY="-30" frameWidth="150" frameHeight="150" />
+<SubTexture name="lose0003" x="0" y="600" width="138" height="120" frameX="-14" frameY="-30" frameWidth="150" frameHeight="150" />
+<SubTexture name="lose0004" x="138" y="600" width="138" height="120" frameX="-14" frameY="-30" frameWidth="150" frameHeight="150" />
+<SubTexture name="lose0005" x="276" y="600" width="138" height="120" frameX="-14" frameY="-30" frameWidth="150" frameHeight="150" />
+</TextureAtlas>
