@@ -35,13 +35,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 	var cornerMark:FlxText; // engine mark at the upper right corner
 	var centerMark:FlxText; // song display name and difficulty at the center
 
-	private var healthBarBG:FlxSprite;
-	private var healthBar:FlxBar;
-
 	private var SONG = PlayState.SONG;
-
-	public var iconP1:HealthIcon;
-	public var iconP2:HealthIcon;
 
 	private var stupidHealth:Float = 0;
 
@@ -62,32 +56,11 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		if (Init.trueSettings.get('Downscroll'))
 			barY = 64;
 
-		healthBarBG = new FlxSprite(0,
-			barY).loadGraphic(Paths.image(ForeverTools.returnSkinAsset('healthBar', PlayState.assetModifier, PlayState.changeableSkin, 'UI')));
-		healthBarBG.screenCenter(X);
-		healthBarBG.scrollFactor.set();
-		add(healthBarBG);
-
-		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8));
-		healthBar.scrollFactor.set();
-		healthBar.createFilledBar(0xFF000000, 0xFFFFFFFF);
-		// healthBar
-		add(healthBar);
-
-		iconP1 = new HealthIcon(SONG.player1, true);
-		iconP1.y = healthBar.y - (iconP1.height / 2);
-		add(iconP1);
-
-		iconP2 = new HealthIcon(SONG.player2, false);
-		iconP2.y = healthBar.y - (iconP2.height / 2);
-		add(iconP2);
-
 		scoreBar = new FlxText(FlxG.width / 2, FlxG.height - 32, 0, scoreDisplay);
 		scoreBar.setFormat(Paths.font('rw-menu.ttf'), 18, FlxColor.WHITE);
 		scoreBar.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
 		updateScoreText();
 		// scoreBar.scrollFactor.set();
-		scoreBar.antialiasing = true;
 		add(scoreBar);
 
 		cornerMark = new FlxText(0, 0, 0, engineDisplay);
@@ -95,7 +68,6 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		cornerMark.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
 		add(cornerMark);
 		cornerMark.setPosition(FlxG.width - (cornerMark.width + 5), 5);
-		cornerMark.antialiasing = true;
 
 		centerMark = new FlxText(0, 0, 0, '- ${infoDisplay} -');
 		centerMark.setFormat(Paths.font('rw-menu.ttf'), 24, FlxColor.WHITE);
@@ -103,7 +75,6 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		add(centerMark);
 			centerMark.y = 10;
 		centerMark.screenCenter(X);
-		centerMark.antialiasing = true;
 
 		// counter
 		if (Init.trueSettings.get('Counter') != 'None')
@@ -137,35 +108,11 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 
 	var left = (Init.trueSettings.get('Counter') == 'Left');
 
+
 	override public function update(elapsed:Float)
 	{
-		// pain, this is like the 7th attempt
-		healthBar.percent = (PlayState.health * 50);
-
-		var iconLerp = 0.5;
-		iconP1.setGraphicSize(Std.int(FlxMath.lerp(iconP1.initialWidth, iconP1.width, iconLerp)));
-		iconP2.setGraphicSize(Std.int(FlxMath.lerp(iconP2.initialWidth, iconP2.width, iconLerp)));
-
-		iconP1.updateHitbox();
-		iconP2.updateHitbox();
-
-		var iconOffset:Int = 26;
-
-		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
-		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
-
-		if (healthBar.percent > 80) {
-			iconP2.animation.curAnim.curFrame = 1;
-			iconP1.animation.curAnim.curFrame = 2;
-		}
-		else if (healthBar.percent < 20) {
-			iconP1.animation.curAnim.curFrame = 1;
-			iconP2.animation.curAnim.curFrame = 2;
-		}
-		else {
-			iconP1.animation.curAnim.curFrame = 0;
-			iconP2.animation.curAnim.curFrame = 0;
-		}
+		// idk what to put here.
+		updateScoreText();
 	}
 
 	private final divider:String = " - ";
@@ -205,14 +152,6 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 
 	public function beatHit()
 	{
-		if (!Init.trueSettings.get('Reduced Movements'))
-		{
-			iconP1.setGraphicSize(Std.int(iconP1.width + 30));
-			iconP2.setGraphicSize(Std.int(iconP2.width + 30));
-
-			iconP1.updateHitbox();
-			iconP2.updateHitbox();
-		}
 		//
 	}
 }

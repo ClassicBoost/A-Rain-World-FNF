@@ -22,6 +22,7 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
+import flixel.ui.FlxBar;
 import flixel.util.FlxTimer;
 import gameObjects.*;
 import gameObjects.userInterface.*;
@@ -106,6 +107,16 @@ class PlayState extends MusicBeatState
 	private var paused:Bool = false;
 	var startedCountdown:Bool = false;
 	var inCutscene:Bool = false;
+
+	public var healthBarBG:FlxSprite;
+	public var healthBar:FlxBar;
+	public var iconP1:HealthIcon;
+	public var iconP2:HealthIcon;
+
+	public var iconP1animated:FlxSprite;
+	public var iconP2animated:FlxSprite;
+	var iconanimexists:Bool = false;
+	var icon2animexists:Bool = false;
 
 	var canPause:Bool = true;
 
@@ -345,6 +356,7 @@ class PlayState extends MusicBeatState
 		}
 		add(strumLines);
 
+		healthShit();
 		uiHUD = new ClassHUD();
 		add(uiHUD);
 		createShit();
@@ -408,6 +420,79 @@ class PlayState extends MusicBeatState
 			var shader:GraphicsShader = new GraphicsShader("", File.getContent("./assets/shaders/vhs.frag"));
 			FlxG.camera.setFilters([new ShaderFilter(shader)]);
 		 */
+	}
+
+	public function healthShit() {
+		var barY = FlxG.height * 0.875;
+		if (Init.trueSettings.get('Downscroll'))
+			barY = 64;
+
+		healthBarBG = new FlxSprite(0,
+			barY).loadGraphic(Paths.image(ForeverTools.returnSkinAsset('healthBar', PlayState.assetModifier, PlayState.changeableSkin, 'UI')));
+		healthBarBG.screenCenter(X);
+		healthBarBG.scrollFactor.set();
+		healthBarBG.cameras = [camHUD];
+		add(healthBarBG);
+
+		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8));
+		healthBar.scrollFactor.set();
+		healthBar.createFilledBar(0xFF000000, 0xFFFFFFFF);
+		healthBar.cameras = [camHUD];
+		// healthBar
+		add(healthBar);
+
+		iconP1 = new HealthIcon(SONG.player1, true);
+		iconP1.y = healthBar.y - (iconP1.height / 2);
+		iconP1.cameras = [camHUD];
+
+		iconP2 = new HealthIcon(SONG.player2, false);
+		iconP2.y = healthBar.y - (iconP2.height / 2);
+		iconP2.cameras = [camHUD];
+
+		if (Init.trueSettings.get('Icons') != 'None') {
+			switch (iconP1.iconPath) {
+				case 'bf','slugcat','rivulet':
+					if (Init.trueSettings.get('Icons') == 'Shown') {
+						iconP1animated = new FlxSprite();
+						iconP1animated.frames = Paths.getSparrowAtlas('icons/animated/${iconP1.iconPath}');
+						iconP1animated.animation.addByPrefix('win', 'win0', 12, true);
+						iconP1animated.animation.addByPrefix('idle', 'normal0', 12, true);
+						iconP1animated.animation.addByPrefix('lose', 'lose0', 12, true);
+						iconP1animated.antialiasing = true;
+						iconP1animated.animation.play('idle', true);
+						iconP1animated.y = healthBar.y - (iconP1animated.height / 2);
+						iconP1animated.flipX = true;
+						iconP1animated.cameras = [camHUD];
+						add(iconP1animated);
+						iconanimexists = true;
+					}
+					else
+						add(iconP1);
+				default:
+					add(iconP1);
+			}
+			switch (iconP2.iconPath) {
+				case 'bf','slugcat','rivulet','lizard-greeny':
+					if (Init.trueSettings.get('Icons') == 'Shown') {
+						iconP2animated = new FlxSprite();
+						iconP2animated.frames = Paths.getSparrowAtlas('icons/animated/${iconP2.iconPath}');
+						iconP2animated.animation.addByPrefix('win', 'win', 12, true);
+						iconP2animated.animation.addByPrefix('idle', 'normal', 12, true);
+						iconP2animated.animation.addByPrefix('lose', 'lose', 12, true);
+						iconP2animated.antialiasing = true;
+						iconP2animated.animation.play('idle', true);
+						iconP2animated.updateHitbox();
+						iconP2animated.y = healthBar.y - (iconP2animated.height / 2);
+						iconP2animated.cameras = [camHUD];
+						add(iconP2animated);
+						icon2animexists = true;
+					}
+					else
+						add(iconP2);
+				default:
+					add(iconP2);
+			}
+		}
 	}
 
 	public function createShit() {
@@ -559,14 +644,57 @@ class PlayState extends MusicBeatState
 
 	var lastSection:Int = 0;
 
+	var iconState:String = '';
+	var iconState2:String = '';
+	var lastIconState:String = '';
 	override public function update(elapsed:Float)
 	{
+		healthBar.percent = (PlayState.health * 50);
+
 		stageBuild.stageUpdateConstant(elapsed, boyfriend, gf, dadOpponent);
 
 		super.update(elapsed);
 
 		if (health > 2)
 			health = 2;
+
+		var iconLerp = 0.5;
+		iconP1.setGraphicSize(Std.int(FlxMath.lerp(iconP1.initialWidth, iconP1.width, iconLerp)));
+		iconP2.setGraphicSize(Std.int(FlxMath.lerp(iconP2.initialWidth, iconP2.width, iconLerp)));
+
+		iconP1.updateHitbox();
+		iconP2.updateHitbox();
+
+		var iconOffset:Int = 26;
+
+		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
+		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+
+		if (iconanimexists) iconP1animated.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
+		if (icon2animexists) iconP2animated.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
+
+		if (healthBar.percent > 80) {
+			iconP2.animation.curAnim.curFrame = 1;
+			iconP1.animation.curAnim.curFrame = 2;
+		}
+		else if (healthBar.percent < 20) {
+			iconP1.animation.curAnim.curFrame = 1;
+			iconP2.animation.curAnim.curFrame = 2;
+		}
+		else {
+			iconP1.animation.curAnim.curFrame = 0;
+			iconP2.animation.curAnim.curFrame = 0;
+		}
+
+		iconState = (healthBar.percent > 80 ? 'win' : healthBar.percent < 20 ? 'lose' : 'idle');
+		iconState2 = (healthBar.percent > 80 ? 'lose' : healthBar.percent < 20 ? 'win' : 'idle');
+
+		if (iconState != lastIconState) {
+			if (iconanimexists) iconP1animated.animation.play(iconState, true);
+			if (icon2animexists) iconP2animated.animation.play(iconState2, true);
+
+			lastIconState = iconState;
+		}
 
 		composerTimer -= 1 * elapsed;
 
@@ -719,9 +847,9 @@ class PlayState extends MusicBeatState
 				hud.zoom = FlxMath.lerp(1 + forceZoom[1], hud.zoom, easeLerp);
 
 			// not even forcezoom anymore but still
-			FlxG.camera.angle = FlxMath.lerp(0 + forceZoom[2], FlxG.camera.angle, easeLerp);
-			for (hud in allUIs)
-				hud.angle = FlxMath.lerp(0 + forceZoom[3], hud.angle, easeLerp);
+			//FlxG.camera.angle = FlxMath.lerp(0 + forceZoom[2], FlxG.camera.angle, easeLerp);
+			//for (hud in allUIs)
+			//	hud.angle = FlxMath.lerp(0 + forceZoom[3], hud.angle, easeLerp);
 
 			// Controls
 
@@ -1582,6 +1710,27 @@ class PlayState extends MusicBeatState
 			FlxTween.tween(topBar, {y: -48}, 1, {ease: FlxEase.quartOut});
 			FlxTween.tween(composerTxt, {alpha: 0}, 0.5, {ease: FlxEase.quartOut});
 		}
+
+		if (icon2animexists && iconP2.iconPath.startsWith('lizard')) iconP2animated.animation.play(iconState2, false);
+
+		if (curSong.toLowerCase() == 'disk') {
+			if (curBeat > 32) {
+				if (curBeat % 2 == 0) {
+					camGame.angle = 1;
+				} else {
+					camGame.angle = -1;
+				}
+			}
+		}
+
+		if (!Init.trueSettings.get('Reduced Movements') && Init.trueSettings.get('Icons') == 'Static')
+			{
+				iconP1.setGraphicSize(Std.int(iconP1.width + 30));
+				iconP2.setGraphicSize(Std.int(iconP2.width + 30));
+	
+				iconP1.updateHitbox();
+				iconP2.updateHitbox();
+			}
 
 		if ((FlxG.camera.zoom < 1.35 && curBeat % 4 == 0) && (!Init.trueSettings.get('Reduced Movements')))
 		{

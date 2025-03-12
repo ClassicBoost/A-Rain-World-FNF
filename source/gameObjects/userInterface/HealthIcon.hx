@@ -14,6 +14,8 @@ class HealthIcon extends FlxSprite
 	public var initialWidth:Float = 0;
 	public var initialHeight:Float = 0;
 
+	public var iconPath = '';
+
 	var splitThing:Int = 2;
 
 	public function new(char:String = 'bf', isPlayer:Bool = false)
@@ -28,7 +30,7 @@ class HealthIcon extends FlxSprite
 		if (trimmedCharacter.contains('-'))
 			trimmedCharacter = trimmedCharacter.substring(0, trimmedCharacter.indexOf('-'));
 
-		var iconPath = char;
+		iconPath = char;
 		if (!FileSystem.exists(Paths.getPath('images/icons/' + iconPath + '.png', IMAGE)))
 		{
 			if (iconPath != trimmedCharacter)
