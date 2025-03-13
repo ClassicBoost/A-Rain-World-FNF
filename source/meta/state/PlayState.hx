@@ -118,6 +118,8 @@ class PlayState extends MusicBeatState
 	var iconanimexists:Bool = false;
 	var icon2animexists:Bool = false;
 
+	public var allowGhostTapping:Bool = false;
+
 	var canPause:Bool = true;
 
 	var previousFrameTime:Int = 0;
@@ -187,6 +189,7 @@ class PlayState extends MusicBeatState
 		misses = 0;
 		botplay = false;
 		disableScore = false;
+		allowGhostTapping = false;
 		// sets up the combo object array
 		lastCombo = [];
 
@@ -390,6 +393,9 @@ class PlayState extends MusicBeatState
 		else
 			startCountdown();
 
+		if (CoolUtil.difficultyFromNumber(storyDifficulty).toLowerCase() == 'monk')
+			allowGhostTapping = true;
+
 		/**
 		 * SHADERS
 		 *
@@ -589,7 +595,7 @@ class PlayState extends MusicBeatState
 					//
 				}
 				else // else just call bad notes
-					if (!Init.trueSettings.get('Ghost Tapping'))
+					if (!allowGhostTapping)
 						missNoteCheck(true, key, boyfriend, true);
 				Conductor.songPosition = previousTime;
 			}
@@ -1045,7 +1051,7 @@ class PlayState extends MusicBeatState
 									note.tooLate = true;
 
 								vocals.volume = 0;
-								missNoteCheck((Init.trueSettings.get('Ghost Tapping')) ? true : false, daNote.noteData, boyfriend, true);
+								missNoteCheck((allowGhostTapping) ? true : false, daNote.noteData, boyfriend, true);
 								// ambiguous name
 								Timings.updateAccuracy(0);
 							}
@@ -1065,7 +1071,7 @@ class PlayState extends MusicBeatState
 										}
 										if (!breakFromLate)
 										{
-											missNoteCheck((Init.trueSettings.get('Ghost Tapping')) ? true : false, daNote.noteData, boyfriend, true);
+											missNoteCheck((allowGhostTapping) ? true : false, daNote.noteData, boyfriend, true);
 											for (note in parentNote.childrenNotes)
 												note.tooLate = true;
 										}
@@ -1711,7 +1717,7 @@ class PlayState extends MusicBeatState
 			FlxTween.tween(composerTxt, {alpha: 0}, 0.5, {ease: FlxEase.quartOut});
 		}
 
-		if (icon2animexists && iconP2.iconPath.startsWith('lizard')) iconP2animated.animation.play(iconState2, false);
+		if (icon2animexists && iconP2.iconPath.startsWith('lizard')) iconP2animated.animation.play(iconState2, true);
 
 		if (curSong.toLowerCase() == 'disk') {
 			if (curBeat > 32) {
