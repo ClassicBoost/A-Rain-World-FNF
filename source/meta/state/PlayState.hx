@@ -136,11 +136,31 @@ class PlayState extends MusicBeatState
 
 	public static var cameraSpeed:Float = 1;
 
+	public static var notesForFood:Float = 50;
+	public static var foodPips:Float = 0;
+	public static var fuckingFood:Map<String, Array<Dynamic>> = [
+		'monk' => [3, 5, 5],
+		'survivor' => [4, 7, 8],
+		'hunter' => [6, 9, 10],
+		'gourmond' => [7, 11, 12],
+		'artificer' => [6, 9, 10],
+		'rivulet' => [5, 6, 7],
+		'spearmaster' => [5, 10, 10],
+		'saint' => [4, 5, 8],
+		'bf' => [3, 6, 7],
+		'salty' => [4, 5, 5],
+		'salty-peppered' => [6, 8, 10],
+	];
+
+	public static var slugcatType:String = 'survivor';
+
 	public static var defaultCamZoom:Float = 1.05;
 
 	public static var forceZoom:Array<Float>;
 
 	public static var songScore:Int = 0;
+
+	public static var diffDisplay:String = 'survivor';
 
 	var storyDifficultyText:String = "";
 
@@ -159,6 +179,8 @@ class PlayState extends MusicBeatState
 	public var bottomBar:FlxSprite;
 	public var topBar:FlxSprite;
 	public var composerTimer:Float = 9999;
+
+	public var dieBitch:Bool = false;
 
 	// strumlines
 	private var dadStrums:Strumline;
@@ -187,9 +209,11 @@ class PlayState extends MusicBeatState
 		combo = 0;
 		health = 1;
 		misses = 0;
+		foodPips = 0;
 		botplay = false;
 		disableScore = false;
 		allowGhostTapping = false;
+		dieBitch = false;
 		// sets up the combo object array
 		lastCombo = [];
 
@@ -393,8 +417,20 @@ class PlayState extends MusicBeatState
 		else
 			startCountdown();
 
-		if (CoolUtil.difficultyFromNumber(storyDifficulty).toLowerCase() == 'monk')
-			allowGhostTapping = true;
+		switch (CoolUtil.difficultyFromNumber(storyDifficulty).toLowerCase()) {
+			case 'easy':
+				diffDisplay = 'monk';
+				allowGhostTapping = true;
+			case 'normal':
+				diffDisplay = 'survivor';
+			case 'hard':
+				diffDisplay = 'hunter';
+			case 'pain':
+				diffDisplay = 'inv';
+				allowGhostTapping = true; // considering most of the songs are note spam.
+				health = 2;
+		}
+		slugcatType = diffDisplay;
 
 		/**
 		 * SHADERS
@@ -457,7 +493,7 @@ class PlayState extends MusicBeatState
 
 		if (Init.trueSettings.get('Icons') != 'None') {
 			switch (iconP1.iconPath) {
-				case 'bf','slugcat','rivulet':
+				case 'bf','slugcat','rivulet','monk','nightcat','inv','hunter':
 					if (Init.trueSettings.get('Icons') == 'Shown') {
 						iconP1animated = new FlxSprite();
 						iconP1animated.frames = Paths.getSparrowAtlas('icons/animated/${iconP1.iconPath}');
@@ -865,7 +901,7 @@ class PlayState extends MusicBeatState
 				health = 0;
 			}
 
-			if (health <= 0 && startedCountdown)
+			if ((health <= 0 && startedCountdown) && (!Init.trueSettings.get('Lunatic Mode') || dieBitch))
 			{
 				paused = true;
 				// startTimer.active = false;
@@ -875,6 +911,7 @@ class PlayState extends MusicBeatState
 				resetMusic();
 
 				deaths += 1;
+				defaultCamZoom = 1;
 
 				openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 
@@ -1163,6 +1200,13 @@ class PlayState extends MusicBeatState
 					if (coolNote.childrenNotes.length > 0)
 						Timings.notesHit++;
 					healthCall(Timings.judgementsMap.get(foundRating)[3]);
+
+					if (Init.trueSettings.get('Lunatic Mode')) {
+						if (foodPips < fuckingFood.get(slugcatType)[1]) foodPips += (1 / notesForFood);
+						else foodPips = fuckingFood.get(slugcatType)[1];
+					}
+
+					PlayState.uiHUD.updateScoreText(true);
 				}
 				else if (coolNote.isSustainNote)
 				{
@@ -1498,12 +1542,15 @@ class PlayState extends MusicBeatState
 		songScore -= 10;
 		misses++;
 
+		if (foodPips > (fuckingFood.get(slugcatType)[1] + 1)) foodPips -= 1;
+
 		// display negative combo
 		if (popMiss)
 		{
 			// doesnt matter miss ratings dont have timings
 			displayRating("miss", 'late');
 			healthCall(Timings.judgementsMap.get("miss")[3]);
+			if (diffDisplay == 'hunter') health -= (0.01 * misses);
 		}
 		popUpCombo();
 
@@ -1862,6 +1909,16 @@ class PlayState extends MusicBeatState
 
 	function endSong():Void
 	{
+		// Die
+		if (Init.trueSettings.get("Lunatic Mode")) {
+			if (foodPips < PlayState.fuckingFood.get(PlayState.slugcatType)[0]) {
+				health = -99;
+				dieBitch = true;
+				return;
+			}
+			if (foodPips >= PlayState.fuckingFood.get(PlayState.slugcatType)[1])
+				songScore = songScore * 2;
+		}
 		canPause = false;
 		songMusic.volume = 0;
 		vocals.volume = 0;

@@ -45,6 +45,10 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 	var diffDisplay:String = CoolUtil.difficultyFromNumber(PlayState.storyDifficulty);
 	var engineDisplay:String = "FOREVER ENGINE LEGACY v" + Main.gameVersion;
 
+	var scoreTxtTween:FlxTween;
+
+	var foodTxt:FlxText;
+
 	// eep
 	public function new()
 	{
@@ -57,11 +61,16 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 			barY = 64;
 
 		scoreBar = new FlxText(FlxG.width / 2, FlxG.height - 32, 0, scoreDisplay);
-		scoreBar.setFormat(Paths.font('rw-menu.ttf'), 18, FlxColor.WHITE);
+		scoreBar.setFormat(Paths.font('rw-menu.ttf'), 24, FlxColor.WHITE, CENTER);
 		scoreBar.setBorderStyle(OUTLINE, FlxColor.BLACK, 1.5);
 		updateScoreText();
 		// scoreBar.scrollFactor.set();
 		add(scoreBar);
+
+		foodTxt = new FlxText(FlxG.width / 2, FlxG.height - 140, 0, scoreDisplay);
+		foodTxt.setFormat(Paths.font('rw-menu.ttf'), 32, FlxColor.WHITE, CENTER);
+		foodTxt.setBorderStyle(OUTLINE, FlxColor.BLACK, 2);
+		if (Init.trueSettings.get('Lunatic Mode')) add(foodTxt);
 
 		cornerMark = new FlxText(0, 0, 0, engineDisplay);
 		cornerMark.setFormat(Paths.font('rw-menu.ttf'), 18, FlxColor.WHITE);
@@ -113,11 +122,14 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 	{
 		// idk what to put here.
 		updateScoreText();
+
+		foodTxt.text = 'Food Pips: ${Math.floor(PlayState.foodPips)}/${PlayState.fuckingFood.get(PlayState.slugcatType)[0]} (${PlayState.fuckingFood.get(PlayState.slugcatType)[1]})';
+		foodTxt.screenCenter(X);
 	}
 
 	private final divider:String = " - ";
 
-	public function updateScoreText()
+	public function updateScoreText(?scoreBop:Bool = false)
 	{
 		var importSongScore = PlayState.songScore;
 		var importPlayStateCombo = PlayState.combo;
@@ -133,7 +145,7 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 		}
 		if (PlayState.botplay) scoreBar.text = '- Botplay -';
 		scoreBar.text += '\n';
-		scoreBar.x = Math.floor((FlxG.width / 2) - (scoreBar.width / 2));
+		scoreBar.screenCenter(X);
 
 		// update counter
 		if (Init.trueSettings.get('Counter') != 'None')
@@ -143,6 +155,19 @@ class ClassHUD extends FlxTypedGroup<FlxBasic>
 				timingsMap[i].text = '${(i.charAt(0).toUpperCase() + i.substring(1, i.length))}: ${Timings.gottenJudgements.get(i)}';
 				timingsMap[i].x = (5 + (!left ? (FlxG.width - 10) : 0) - (!left ? (6 * counterTextSize) : 0));
 			}
+		}
+
+		if (scoreBop) {
+			if(scoreTxtTween != null)
+				scoreTxtTween.cancel();
+	
+			scoreBar.scale.x = 1.075;
+			scoreBar.scale.y = 1.075;
+			scoreTxtTween = FlxTween.tween(scoreBar.scale, {x: 1, y: 1}, 0.25, {ease: FlxEase.linear, 
+				onComplete: function(twn:FlxTween) {
+					scoreTxtTween = null;
+				}
+			});
 		}
 
 		// update playstate

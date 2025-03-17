@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="inv.png">
+<SubTexture name="win0000" x="0" y="0" width="116" height="134" frameX="-25" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="win0001" x="116" y="0" width="116" height="134" frameX="-25" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0000" x="232" y="0" width="116" height="134" frameX="-25" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0001" x="0" y="134" width="116" height="134" frameX="-25" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="lose0000" x="116" y="134" width="116" height="134" frameX="-25" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="lose0001" x="232" y="134" width="116" height="134" frameX="-25" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="cube0000" x="0" y="268" width="114" height="114" frameX="-29" frameY="-30" frameWidth="150" frameHeight="150" />
+<SubTexture name="egg0000" x="114" y="268" width="89" height="109" frameX="-36" frameY="-32" frameWidth="150" frameHeight="150" />
+<SubTexture name="egg0001" x="203" y="268" width="87" height="108" frameX="-36" frameY="-32" frameWidth="150" frameHeight="150" />
+</TextureAtlas>

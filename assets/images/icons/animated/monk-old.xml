@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="monk.png">
+<SubTexture name="win0000" x="116" y="0" width="116" height="134" frameX="-25" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="win0001" x="232" y="0" width="117" height="134" frameX="-24" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="win0002" x="0" y="134" width="116" height="134" frameX="-29" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="win0003" x="116" y="134" width="117" height="134" frameX="-29" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0000" x="0" y="0" width="116" height="134" frameX="-25" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="normal0001" x="233" y="134" width="117" height="134" frameX="-24" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="lose0000" x="0" y="268" width="116" height="134" frameX="-25" frameY="-16" frameWidth="150" frameHeight="150" />
+<SubTexture name="lose0001" x="116" y="268" width="117" height="134" frameX="-24" frameY="-16" frameWidth="150" frameHeight="150" />
+</TextureAtlas>

@@ -63,7 +63,7 @@ class PauseSubState extends MusicBeatSubState
 
 
 		levelInfo = new FlxText(20, 0, 0, "", 32);
-		levelInfo.text += CoolUtil.dashToSpace(PlayState.SONG.song + ' - Fails: ' + PlayState.deaths);
+		levelInfo.text += CoolUtil.dashToSpace(PlayState.SONG.song) + ' - Fails: ' + PlayState.deaths;
 		levelInfo.scrollFactor.set();
 		levelInfo.setFormat(Paths.font("segoe.ttf"), 32);
 		levelInfo.updateHitbox();
