@@ -1,3 +1,28 @@
+  <h1 align="center">A Rain World Mod</h1>
+This is a literal FNF mod with slugcats and shit lol. But yea this just adds songs, characters, and other shit like any other FNF mod. Do you expect anything special?<br>
+
+_Boo Hoo! This mod has no ghost tapping! (except Monk difficulty)_
+
+# Features
+* Songs (explosion)
+* Scugs
+* Me having no hours of sleep!
+* Lunatic Mode
+  * This adds the Food Pip system which requires hitting a certain amount of notes to live, some other features like making mechanics harder and stuff.
+* Difficulties
+  * Monk
+    * Only difficulty that has ghost tapping
+  * Survivor
+    * This difficulty is the only one used for freeplay songs. (some exceptions!)
+  * Hunter
+    * This disables long note healing and you cannot miss too many times!
+
+<br><br><br>
+now go play rain world now >:(
+<br><br>
+Now onto Forever Engine Readme.
+
+----------------------------------------------
 <p align="center">
   <img src="https://media.discordapp.net/attachments/916918345255751690/930068118938730526/legacy.png" width="750"/></a>
   <h1 align="center">Forever Engine Legacy</h1>
@@ -5,8 +30,9 @@
 </p>
 
 ----------------------------------------------
-## Please redirect all future and current enhancements to the [new repository](https://github.com/Yoshubs/FNF-Forever-Engine).
+## Please redirect all future and current enhancements to the [new repository](https://www.youtube.com/watch?v=xvFZjo5PgG0).
 ----------------------------------------------
+[Link for Forever Engine](https://github.com/some-fnf-archives/Forever-Engine-Legacy)
 Forever Engine is currently in *legacy* state as it is being rewritten. 
 
 The legacy version of Forever Engine lacks accessibility and cohesion, something we are currently working to fix with the more newer and updated rewrite.
@@ -29,9 +55,13 @@ AND MORE!
 
 ----------------------------------------------
 # Credits:
-* [Yoshubs](https://github.com/Yoshubs) (me!):
+* [crowplexus](https://twitter.com/crowplexus):
+    * maintainer of the engine as of recent events. (Despite this engine using 0.3.1 :v)
+    * she likes how the note splash looks;
+* [Yoshubs](https://github.com/Yoshubs):
     * made the engine,
     * happens to be very fucking stupid for accidentally pushing the martian mixtape source code into legacy's base github page;
+    * **I do not support her actions.**
 * [Pixloen](https://github.com/PixlJacket):
     * made a lot of custom assets that legacy uses,
     * gave me a lot of advice on how to improve the engine as well as his input on how to improve upon the base game and how the input system felt and such,
