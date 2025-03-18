@@ -9,6 +9,7 @@ import flixel.group.FlxGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import gameObjects.userInterface.menu.*;
@@ -26,13 +27,7 @@ class StoryMenuState extends MusicBeatState
 	public static var weekUnlocked:Array<Bool> = [true, true, true, true, true, true, true];
 
 	var weekCharacters:Array<Dynamic> = [
-		['', 'bf', 'gf'],
-		['dad', 'bf', 'gf'],
-		['spooky', 'bf', 'gf'],
-		['pico', 'bf', 'gf'],
-		['mom', 'bf', 'gf'],
-		['parents-christmas', 'bf', 'gf'],
-		['senpai', 'bf', 'gf']
+		['', '', ''],
 	];
 
 	var txtWeekTitle:FlxText;
@@ -51,6 +46,44 @@ class StoryMenuState extends MusicBeatState
 	var leftArrow:FlxSprite;
 	var rightArrow:FlxSprite;
 
+	var invSecretTimer:Float = 60;
+	var dialogueTimer:Float = 3.4;
+	public var playedInvSecret:Bool = false;
+
+	public var subtitleTxt:FlxText;
+
+	var currentPart:Int = 1;
+
+	public static var invDialogue:Map<Int, Array<Dynamic>> =
+	[
+		1 => ["Hey Apple, Check out my sweet new mods!", 3.4],
+		2 => ["Why don't you play them for me?", 1.8],
+		3 => ["It'd be pretty sweet yo!", 2.2],
+		4 => ["Oh yea sure no problem I'll definitely play them.", 3],
+		5 => ['', 1.9],
+		6 => ["Surely nothing will be ha- ba-bad or wrong about this!", 3.9],
+		7 => ["Oh yea, they're really cool!", 3.4],
+		8 => ["You'll have a great time with them!", 2.1],
+		9 => ["Aww thanks man!", 2.5],
+		10 => ["This looks fun!", 1.6],
+		11 => ["Eugh, huehuehuah yeah, you'll have lots of fun, huehuehuehue.", 4],
+		12 => ["", 9999],
+	];
+	public var diffText:Array<String> = [
+		'An easier version of the mod, enables ghost tapping.',
+		'How the mod is meant to be played.',
+		'A harder version of the mod. Long notes doesn\'t heal\nand your mistakes hurts you further.\n',
+		'please die',
+	];
+	public var diffString:Array<String> = [
+		'monk',
+		'survivor',
+		'hunter',
+		'inv',
+	];
+
+	public var difficultyImage:FlxSprite;
+
 	override function create()
 	{
 		super.create();
@@ -67,12 +100,12 @@ class StoryMenuState extends MusicBeatState
 
 		persistentUpdate = persistentDraw = true;
 
-		scoreText = new FlxText(10, 10, 0, "SCORE: 49324858", 36);
-		scoreText.setFormat("VCR OSD Mono", 32);
+		scoreText = new FlxText(10, 575, 0, "SCORE: 49324858", 36);
+		scoreText.setFormat(Paths.font('segoe.ttf'), 24, FlxColor.GRAY, CENTER);
+		scoreText.alpha = 0;
 
-		txtWeekTitle = new FlxText(FlxG.width * 0.7, 10, 0, "", 32);
-		txtWeekTitle.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, RIGHT);
-		txtWeekTitle.alpha = 0.7;
+		txtWeekTitle = new FlxText(FlxG.width * 0.7, 550, 0, "", 32);
+		txtWeekTitle.setFormat(Paths.font('segoe.ttf'), 32, FlxColor.WHITE, CENTER);
 
 		var rankText:FlxText = new FlxText(0, 10);
 		rankText.text = 'RANK: GREAT';
@@ -81,7 +114,7 @@ class StoryMenuState extends MusicBeatState
 		rankText.screenCenter(X);
 
 		var ui_tex = Paths.getSparrowAtlas('menus/base/storymenu/campaign_menu_UI_assets');
-		var yellowBG:FlxSprite = new FlxSprite(0, 56).makeGraphic(FlxG.width, 400, 0xFFF9CF51);
+		var yellowBG:FlxSprite = new FlxSprite(0, 56).makeGraphic(FlxG.width, 400, 0xFFADADAD);
 
 		grpWeekText = new FlxTypedGroup<MenuItem>();
 		add(grpWeekText);
@@ -99,6 +132,7 @@ class StoryMenuState extends MusicBeatState
 			var weekThing:MenuItem = new MenuItem(0, yellowBG.y + yellowBG.height + 10, i);
 			weekThing.y += ((weekThing.height + 20) * i);
 			weekThing.targetY = i;
+			weekThing.alpha = 0;
 			grpWeekText.add(weekThing);
 
 			weekThing.screenCenter(X);
@@ -156,23 +190,28 @@ class StoryMenuState extends MusicBeatState
 		leftArrow.animation.addByPrefix('idle', "arrow left");
 		leftArrow.animation.addByPrefix('press', "arrow push left");
 		leftArrow.animation.play('idle');
-		difficultySelectors.add(leftArrow);
+		//difficultySelectors.add(leftArrow);
 
 		sprDifficulty = new FlxSprite(leftArrow.x + 130, leftArrow.y);
 		sprDifficulty.frames = ui_tex;
 		for (i in CoolUtil.difficultyArray)
 			sprDifficulty.animation.addByPrefix(i.toLowerCase(), i.toUpperCase());
 		sprDifficulty.animation.play('easy');
+
+		difficultyImage = new FlxSprite(0, yellowBG.height + 10);
+		difficultyImage.loadGraphic(Paths.image('menus/rainworld/difficulty/${diffString[curDifficulty]}'));
+		difficultyImage.antialiasing = true;
+		add(difficultyImage);
 		changeDifficulty();
 
-		difficultySelectors.add(sprDifficulty);
+		//difficultySelectors.add(sprDifficulty);
 
 		rightArrow = new FlxSprite(sprDifficulty.x + sprDifficulty.width + 50, leftArrow.y);
 		rightArrow.frames = ui_tex;
 		rightArrow.animation.addByPrefix('idle', 'arrow right');
 		rightArrow.animation.addByPrefix('press', "arrow push right", 24, false);
 		rightArrow.animation.play('idle');
-		difficultySelectors.add(rightArrow);
+		//difficultySelectors.add(rightArrow);
 
 		trace("Line 150");
 
@@ -183,10 +222,17 @@ class StoryMenuState extends MusicBeatState
 		txtTracklist.alignment = CENTER;
 		txtTracklist.font = rankText.font;
 		txtTracklist.color = 0xFFe55777;
-		add(txtTracklist);
+		//add(txtTracklist);
 		// add(rankText);
 		add(scoreText);
 		add(txtWeekTitle);
+
+		subtitleTxt = new FlxText(0, FlxG.height - 24, FlxG.width, "", 20);
+		subtitleTxt.setFormat(Paths.font('rw-menu.ttf'), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		subtitleTxt.scrollFactor.set();
+		subtitleTxt.screenCenter(X);
+		subtitleTxt.borderSize = 1.5;
+		add(subtitleTxt);
 
 		// very unprofessional yoshubs!
 
@@ -199,10 +245,31 @@ class StoryMenuState extends MusicBeatState
 		var lerpVal = Main.framerateAdjust(0.5);
 		lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, lerpVal));
 
-		scoreText.text = "WEEK SCORE:" + lerpScore;
+		scoreText.text = "PERSONAL BEST: " + lerpScore;
 
-		txtWeekTitle.text = Main.gameWeeks[curWeek][3].toUpperCase();
-		txtWeekTitle.x = FlxG.width - (txtWeekTitle.width + 10);
+		txtWeekTitle.text = diffText[curDifficulty];
+
+		scoreText.screenCenter(X);
+		txtWeekTitle.screenCenter(X);
+
+		if (curDifficulty != 3) invSecretTimer = 60;
+		invSecretTimer -= 1 * elapsed;
+
+		if (invSecretTimer < 0 && !playedInvSecret) {
+			FlxG.sound.play(Paths.sound('menus/inv_secret'));
+			playedInvSecret = true;
+		}
+
+		if (playedInvSecret) {
+			dialogueTimer -= 1 * elapsed;
+
+			subtitleTxt.text = invDialogue[currentPart][0];
+
+			if (dialogueTimer < 0) {
+				currentPart++;
+				dialogueTimer = invDialogue[currentPart][1];
+			}
+		}
 
 		// FlxG.watch.addQuick('font', scoreText.font);
 
@@ -217,11 +284,6 @@ class StoryMenuState extends MusicBeatState
 		{
 			if (!selectedWeek)
 			{
-				if (controls.UI_UP_P)
-					changeWeek(-1);
-				else if (controls.UI_DOWN_P)
-					changeWeek(1);
-
 				if (controls.UI_RIGHT)
 					rightArrow.animation.play('press')
 				else
@@ -318,6 +380,21 @@ class StoryMenuState extends MusicBeatState
 		intendedScore = Highscore.getWeekScore(curWeek, curDifficulty);
 
 		FlxTween.tween(sprDifficulty, {y: leftArrow.y + 15, alpha: 1}, 0.07);
+
+		FlxTween.cancelTweensOf(txtWeekTitle);
+		FlxTween.cancelTweensOf(scoreText);
+
+		if (intendedScore != 0) {
+			FlxTween.tween(scoreText, {"alpha": 1}, 0.25, {ease: FlxEase.linear});
+			FlxTween.tween(txtWeekTitle, {"y": 620}, 0.25, {ease: FlxEase.cubeOut});
+		} else {
+			FlxTween.tween(scoreText, {"alpha": 0}, 0.25, {ease: FlxEase.linear});
+			FlxTween.tween(txtWeekTitle, {"y": 575}, 0.25, {ease: FlxEase.cubeOut});
+		}
+		FlxG.sound.play(Paths.sound('menus/base/scrollMenu'));
+		difficultyImage.loadGraphic(Paths.image('menus/rainworld/difficulty/${diffString[curDifficulty]}'));
+		difficultyImage.screenCenter(X);
+		difficultyImage.y = 500;
 	}
 
 	var lerpScore:Int = 0;
@@ -337,10 +414,6 @@ class StoryMenuState extends MusicBeatState
 		for (item in grpWeekText.members)
 		{
 			item.targetY = bullShit - curWeek;
-			if (item.targetY == Std.int(0) && weekUnlocked[curWeek])
-				item.alpha = 1;
-			else
-				item.alpha = 0.6;
 			bullShit++;
 		}
 

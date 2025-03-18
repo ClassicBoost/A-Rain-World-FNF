@@ -208,7 +208,7 @@ class MainMenuState extends MusicBeatState
 			counterControl = 0;
 		}
 
-		if (FlxG.keys.justPressed.SEVEN) Main.switchState(this, new DatingSimState());
+		if (FlxG.keys.justPressed.SEVEN && Init.trueSettings.get('Debug Info')) Main.switchState(this, new DatingSimState());
 
 		if ((controls.ACCEPT) && (!selectedSomethin))
 		{

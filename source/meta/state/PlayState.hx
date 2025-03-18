@@ -1214,7 +1214,7 @@ class PlayState extends MusicBeatState
 					if (coolNote.parentNote != null)
 					{
 						Timings.updateAccuracy(100, true, coolNote.parentNote.childrenNotes.length);
-						healthCall(100 / coolNote.parentNote.childrenNotes.length);
+						if (slugcatType != 'hunter') healthCall(100 / coolNote.parentNote.childrenNotes.length);
 					}
 				}
 			}
